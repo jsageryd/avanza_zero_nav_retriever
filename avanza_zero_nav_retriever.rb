@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
+require 'bundler/setup' rescue nil
+
 class AvanzaZeroNAVGetter
   class << self
     def latest
