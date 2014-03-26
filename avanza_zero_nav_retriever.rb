@@ -8,7 +8,9 @@ class AvanzaZeroNAVGetter
       require 'nokogiri'
 
       uri = URI.parse('https://www.avanza.se/fonder/om-fonden.html/41567/avanza-zero')
-      res = Net::HTTP.get_response(uri)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+      res = http.request_get(uri.path)
       doc = Nokogiri.parse(res.body)
       date = doc.xpath('//*[@id="surface"]/div[2]/div/div/div/div/ul/li[9]/span[2]').text.strip
       nav = doc.xpath('//*[@id="surface"]/div[2]/div/div/div/div/ul/li[2]/div[2]').text.gsub(',', '.').strip
