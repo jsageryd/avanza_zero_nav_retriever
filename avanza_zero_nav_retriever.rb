@@ -22,7 +22,17 @@ class AvanzaZeroNAVGetter
   end
 end
 
-price_db = '%s/Dropbox/Ledger/prices/price-db' % ENV['HOME']
+price_db = '%s/Documents/ledger/prices/price-db' % ENV['HOME']
 our_last = `grep ZERO "#{price_db}" | tail -1`.strip
 theirs = AvanzaZeroNAVGetter.latest
-File.open(price_db, 'a') { |io| io.puts theirs } if our_last != theirs
+if our_last != theirs
+  File.open(price_db, 'a') { |io| io.puts theirs }
+  cmd = <<-SHELL
+    pushd #{File.dirname(price_db)} && \
+    git add price-db && \
+    git commit -m 'Update #{theirs[/P ([^ ]+)/, 1]}' && \
+    git push && \
+    popd
+  SHELL
+  system cmd or raise 'Avanze Zero NAV repo update failed'
+end
