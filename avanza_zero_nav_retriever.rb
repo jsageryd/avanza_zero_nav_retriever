@@ -25,7 +25,7 @@ end
 price_db = '%s/Documents/ledger/prices/price-db' % ENV['HOME']
 our_last = `grep ZERO "#{price_db}" | tail -1`.strip
 theirs = AvanzaZeroNAVGetter.latest
-if !theirs.empty? && our_last != theirs
+if theirs =~ /[0-9]/ && our_last != theirs
   File.open(price_db, 'a') { |io| io.puts theirs }
   cmd = <<-SHELL
     pushd #{File.dirname(price_db)} && \
